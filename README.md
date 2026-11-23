@@ -45,6 +45,19 @@ CloudCluster-Scheduler is a Java-based project that simulates CPU scheduling str
 CloudCluster-Scheduler/
 │
 ├── src/
+      └─ main/
+          └─  java
+                └─ cs241
+                   ├─ App
+                   ├─ model
+                   │   ├─ Process
+                   │   ├─ GanttEntry
+                   │   ├─ SimulationResult
+                   │   └─ Scheduler
+                   ├─ sjf
+                   │   └─ PreemptiveSJF
+                   └─ acs
+                       └─ ACSScheduler  
 ├── gui/
 ├── docs/
 └── README.md
