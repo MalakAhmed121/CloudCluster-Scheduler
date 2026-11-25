@@ -17,7 +17,7 @@ public class Tier2Queue {
 
     // Add a process demoted from Tier 1
     public void add(Process p, int time) {
-        if (p != null && p.remaining > 0) {
+        if (p != null && p.remaining > 0 && !queue.contains(p)) {
             p.effectivePriority = p.priority;
             queue.add(p);
             enteredAt.put(p, time);
