@@ -79,7 +79,7 @@ public class Tier2Queue {
     }
 
     // Execute the selected process until it finishes
-    public int execute(Process p, int start,int cs, String lastPid, SimulationResult res) {
+    public int execute(Process p, int start, SimulationResult res) {
 
         if (p == null || !queue.contains(p)) {
             return start;
@@ -88,10 +88,7 @@ public class Tier2Queue {
         queue.remove(p);
         enteredAt.remove(p);
 
-        // Context switch:
-    if (lastPid != null && !lastPid.equals(p.id)) {
-        start += cs;
-    }
+        
 
         if (p.firstStart == -1) {
             p.firstStart = start;
