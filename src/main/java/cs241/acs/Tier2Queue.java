@@ -3,7 +3,8 @@ package cs241.acs;
 import cs241.model.GanttEntry;
 import cs241.model.Process;
 import cs241.model.SimulationResult;
-
+import cs241.model.StepSnapshot;
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -132,5 +133,16 @@ public class Tier2Queue {
         sb.append("]");
 
         return sb.toString();
+    }
+    public List<StepSnapshot.Tier2Item> tier2Items(Process running) {
+        List<Process> sorted = new ArrayList<>(queue);
+        sorted.sort(Comparator.comparingInt((Process p) -> p.effectivePriority)
+                .thenComparingInt(p -> enteredAt.get(p))
+                .thenComparingInt(p -> p.arrival)
+                .thenComparing(p -> p.id));
+        List<StepSnapshot.Tier2Item> items = new ArrayList<>();
+        for (Process p : sorted)
+            items.add(new StepSnapshot.Tier2Item(p.id, p.effectivePriority, p.remaining, p == running));
+        return items;
     }
 }

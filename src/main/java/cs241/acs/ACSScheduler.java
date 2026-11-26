@@ -5,7 +5,7 @@ import cs241.model.InputValidator;
 import cs241.model.Process;
 import cs241.model.Scheduler;
 import cs241.model.SimulationResult;
-
+import cs241.model.StepSnapshot;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -76,17 +76,35 @@ public class ACSScheduler implements Scheduler {
                     case CONTINUE:
                         break;
                 }
+                res.steps.add(new StepSnapshot(time, current.id,
+                        tier1.tier1Items(), tier2.tier2Items(null), List.of()));
 
             } else if (!tier2.isEmpty()) {
                 // Tier 2: non-preemptive، + Aging
+//                Aging.updatePriorities(tier2, time, res);
+//                Process p = tier2.peekNext();
+//
+//                if (last != null && last != p && contextSwitch > 0) {
+//                    addEntry(res, CONTEXT_SWITCH, time, time + contextSwitch);
+//                    time += contextSwitch;
+//                }
+//                time = tier2.execute(p, time, res);   //  Gantt & firstStart & finish
+//                last = p;
+//                completed++;
+                int agingFrom = res.agingLog.size();
                 Aging.updatePriorities(tier2, time, res);
+                List<String> agingNotes =
+                        new ArrayList<>(res.agingLog.subList(agingFrom, res.agingLog.size()));
                 Process p = tier2.peekNext();
 
                 if (last != null && last != p && contextSwitch > 0) {
                     addEntry(res, CONTEXT_SWITCH, time, time + contextSwitch);
                     time += contextSwitch;
                 }
-                time = tier2.execute(p, time, res);   //  Gantt & firstStart & finish
+                // قبل execute عشان الـ process المختارة تفضل في الجدول معلّمة RUNNING
+                res.steps.add(new StepSnapshot(time, p.id,
+                        List.of(), tier2.tier2Items(p), agingNotes));
+                time = tier2.execute(p, time, res);
                 last = p;
                 completed++;
 

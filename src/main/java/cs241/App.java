@@ -5,6 +5,7 @@ import cs241.model.Process;
 import cs241.model.SimulationResult;
 import cs241.sjf.PreemptiveSJF;
 import javafx.application.Application;
+import cs241.ui.VisualizationPanel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -60,6 +61,7 @@ public class App extends Application {
 
     private final HBox timeline = new HBox(5);
     private final Label chartSummary = new Label("Run the simulation to view its execution timeline.");
+    private final VisualizationPanel visualizationPanel = new VisualizationPanel();
 
     @Override
     public void start(Stage stage) {
@@ -115,16 +117,7 @@ public class App extends Application {
         // Configure results table
         configureResultsTable();
 
-        timeline.setAlignment(Pos.CENTER_LEFT);
-        timeline.setPadding(new Insets(14));
-
-        ScrollPane chartScroll = new ScrollPane(timeline);
-        chartScroll.setFitToHeight(true);
-        chartScroll.setPrefViewportHeight(105);
-        chartScroll.setStyle("-fx-background: white; -fx-background-color: white;");
-
-        VBox ganttCard = card("Gantt Chart", chartSummary, chartScroll);
-        VBox resultCard = card("SJF Results", resultsTable);
+        VBox resultCard = card("Results", resultsTable);
 
         // Configure the ACS Demotion Table
         configureDemotionTable();
@@ -158,7 +151,7 @@ public class App extends Application {
                 title,
                 subtitle,
                 inputCard,
-                ganttCard,
+                visualizationPanel,
                 resultCard,
                 demotionCard);
 
@@ -383,28 +376,25 @@ public class App extends Application {
             resultsTable.getItems().setAll(
                     result.processes.stream().map(ProcessRow::new).toList());
 
-            // Display ACS demotion events
-            if ("ACS".equals(algorithmInput.getValue())) {
+            boolean isAcs = "ACS".equals(algorithmInput.getValue());
+
+            if (isAcs) {
                 demotionTable.getItems().setAll(result.demotionMatrix);
             } else {
                 demotionTable.getItems().clear();
             }
 
-            // Display Gantt Chart
-            renderTimeline(result.gantt);
+            // Gantt + Tier 1 / Tier 2 / Aging
+            visualizationPanel.show(result, isAcs);
 
-            // Calculate average metrics
             double avgWait = result.processes.stream()
                     .mapToInt(Process::waiting).average().orElse(0);
-
             double avgTurnaround = result.processes.stream()
                     .mapToInt(Process::turnaround).average().orElse(0);
-
             double avgResponse = result.processes.stream()
                     .mapToInt(Process::response).average().orElse(0);
 
-            // Display average metrics
-            chartSummary.setText(String.format(
+            visualizationPanel.setSummary(String.format(
                     "Average waiting: %.2f    Average turnaround: %.2f    Average response: %.2f time units",
                     avgWait, avgTurnaround, avgResponse));
 
