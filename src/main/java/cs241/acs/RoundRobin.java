@@ -1,5 +1,8 @@
 package cs241.acs;
 import cs241.model.Process;
+import cs241.model.StepSnapshot;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ArrayDeque;
 import java.util.Objects;
 import java.util.Queue;
@@ -85,5 +88,10 @@ public class RoundRobin {
             first = false;
         }
         return sb.append("]").toString();
+    }
+    public List<StepSnapshot.Tier1Item> tier1Items() {
+        List<StepSnapshot.Tier1Item> items = new ArrayList<>();
+        for (Process p : ready) items.add(new StepSnapshot.Tier1Item(p.id, p.remaining));
+        return items;
     }
 }
