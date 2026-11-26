@@ -75,4 +75,15 @@ public class RoundRobin {
     public boolean isIdle() {
         return running == null && ready.isEmpty();
     }
+
+    public String snapshot() {
+        StringBuilder sb = new StringBuilder("Tier 1: [");
+        boolean first = true;
+        for (Process p : ready) {
+            if (!first) sb.append(", ");
+            sb.append(p.id).append(" (remaining: ").append(p.remaining).append(")");
+            first = false;
+        }
+        return sb.append("]").toString();
+    }
 }
