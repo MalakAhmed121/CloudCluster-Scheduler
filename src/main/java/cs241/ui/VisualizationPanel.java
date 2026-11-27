@@ -90,13 +90,12 @@ public class VisualizationPanel extends VBox {
         }
 
         renderGantt(result.gantt == null ? Collections.emptyList() : result.gantt);
-
         boolean hasSteps = isAcs && result.steps != null && !result.steps.isEmpty();
-        setAcsMode(hasSteps);
         if (hasSteps) {
             loadSteps(result.steps);
+        } else {
+            setAcsMode(false);
         }
-        setAcsMode(false);
     }
 
 
