@@ -81,16 +81,6 @@ public class ACSScheduler implements Scheduler {
 
             } else if (!tier2.isEmpty()) {
                 // Tier 2: non-preemptive، + Aging
-//                Aging.updatePriorities(tier2, time, res);
-//                Process p = tier2.peekNext();
-//
-//                if (last != null && last != p && contextSwitch > 0) {
-//                    addEntry(res, CONTEXT_SWITCH, time, time + contextSwitch);
-//                    time += contextSwitch;
-//                }
-//                time = tier2.execute(p, time, res);   //  Gantt & firstStart & finish
-//                last = p;
-//                completed++;
                 int agingFrom = res.agingLog.size();
                 Aging.updatePriorities(tier2, time, res);
                 List<String> agingNotes =
@@ -101,7 +91,7 @@ public class ACSScheduler implements Scheduler {
                     addEntry(res, CONTEXT_SWITCH, time, time + contextSwitch);
                     time += contextSwitch;
                 }
-                // قبل execute عشان الـ process المختارة تفضل في الجدول معلّمة RUNNING
+                
                 res.steps.add(new StepSnapshot(time, p.id,
                         List.of(), tier2.tier2Items(p), agingNotes));
                 time = tier2.execute(p, time, res);
